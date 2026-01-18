@@ -10,6 +10,7 @@ on:
 jobs:
   preparing:
     runs-on: prepare-runner
+    environment: production
     outputs:
       runner_name: ${{ steps.compute.outputs.runner_name }}
 
