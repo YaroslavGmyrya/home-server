@@ -1,0 +1,37 @@
+name: CI
+
+#триггер для срабатывания пайалайна (пуш в ветку main)
+on:
+    push:
+      branches: [ "main" ]
+
+jobs:
+    preparing:
+      runs-on: prepare-runner
+      steps:
+        # Actions от github: проверяет репозиторий, гит и т.д.
+        - uses: actions/checkout@v3
+
+        #подготовка сервера к вызову основного контейнера (нужно сконфигурировать файл values.yaml, который хранит настройки раннера.
+        #Необходимо указать URL git репозитория, который вызвал раннер
+        - name: preparing server
+          env:
+            #git-переменные (не светим ключами)
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            SERVER_DOMAIN_NAME: ${{ secrets.SERVER_DOMAIN_NAME }}
+            PREPARING_HOST_NAME: ${{ secrets.PREPARING_HOST_NAME }}
+            SSH_PORT: ${{ secrets.SSH_PORT }}
+            SSH_KEY_PATH:  ${{ secrets.SSH_KEY_PATH }}
+
+
+          run: |          
+              printf '%s\n' "$SSH_PRIVATE_KEY" > "$SSH_KEY_PATH"
+              chmod 600 "$SSH_KEY_PATH"
+          
+              mkdir -p ~/.ssh
+              ssh-keyscan -p "${SSH_PORT:-22}" -H "$SERVER_DOMAIN_NAME" >> ~/.ssh/known_hosts
+          
+              ssh -p "${SSH_PORT:-22}" \
+                  -i "$SSH_KEY_PATH" \
+                  "${PREPARING_HOST_NAME}@${SERVER_DOMAIN_NAME}" \
+                  "/opt/script.sh '${GITHUB_SERVER_URL}' '${GITHUB_REPOSITORY}'"
