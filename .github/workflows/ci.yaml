@@ -24,8 +24,9 @@ jobs:
             SSH_KEY_PATH: ${{ secrets.SSH_KEY_PATH }}
 
 
-          run: |          
-              printf '%s\n' "$SSH_PRIVATE_KEY" > "$SSH_KEY_PATH"
+          run: |
+              mkdir -p ~/.ssh
+              printf '%s\n' "$SSH_PRIVATE_KEY" > "$HOME/$SSH_KEY_PATH"
               chmod 600 "$SSH_KEY_PATH"
           
               mkdir -p ~/.ssh
