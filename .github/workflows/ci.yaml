@@ -20,6 +20,8 @@ jobs:
           set -euo pipefail
           repo_safe="${github.repository,,}"
           repo_safe="${repo_safe//\//-}"  
+          echo "runner_name=runners-${repo_safe}" >> "$GITHUB_OUTPUT"
+
       - name: preparing server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
