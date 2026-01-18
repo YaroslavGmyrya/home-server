@@ -10,7 +10,7 @@ on:
 jobs:
   preparing:
     runs-on: ubuntu-latest
-    #environment: myenv
+    environment: myenv
     outputs:
       runner_name: ${{ steps.compute.outputs.runner_name }}
 
