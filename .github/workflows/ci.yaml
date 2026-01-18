@@ -20,7 +20,8 @@ jobs:
         run: |
           echo "DEBUG1"
           set -euo pipefail
-          repo_safe="${{ github.repository }},,"
+          repo_safe="${{ github.repository }}"
+          repo_safe="${repo_safe,,}"
           repo_safe="${repo_safe//\//-}"
           echo "runner_name=runners-${repo_safe}" >> "$GITHUB_OUTPUT"
           echo "DEBUG2"
