@@ -2,10 +2,16 @@ name: Prepare server (reusable)
 
 on:
   workflow_call:
+    outputs:
+        runner_name:
+          description: "Runner label for this repo"
+          value: ${ jobs.prepare.outputs.runner_name }
 
 jobs:
   preparing:
     runs-on: prepare-runner
+    outputs:
+      runner_name: ${ steps.compute.outputs.runner_name }
     steps:
       - name: preparing server
         env:
@@ -14,6 +20,11 @@ jobs:
           PREPARING_HOST_NAME: ${{ secrets.PREPARING_HOST_NAME }}
           SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
+          repo_safe="${ github.repository | tr '[:upper:]' '[:lower:]' | tr '/_' '--') }"
+          repo_safe="${repo_safe//\//-}"
+          echo repo_safe
+          echo "runner_name=runners-${repo_safe}" >> "$GITHUB_OUTPUT"
+
           set -euo pipefail
 
           mkdir -p ~/.ssh
