@@ -32,6 +32,6 @@ jobs:
               ssh-keyscan -p "${SSH_PORT:-22}" -H "$SERVER_DOMAIN_NAME" >> ~/.ssh/known_hosts
           
               ssh -p "${SSH_PORT:-22}" \
-                  -i "$SSH_KEY_PATH" \
+                  -i "$HOME/$SSH_KEY_PATH" \
                   "${PREPARING_HOST_NAME}@${SERVER_DOMAIN_NAME}" \
                   "/opt/github_k3s_runners/update_repo_url.sh '${GITHUB_SERVER_URL}' '${GITHUB_REPOSITORY}'"
